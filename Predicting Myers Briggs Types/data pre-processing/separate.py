@@ -1,6 +1,8 @@
+import os
 import pandas as pd
 
-df = pd.read_csv('../datasets/raw.csv')
+read_path = os.path.join('..', 'datasets', 'raw.csv')
+df = pd.read_csv(read_path)
 
 # [E, S, T, P]
 
@@ -10,4 +12,5 @@ texts = df['posts']
 
 for i, label in enumerate(labels):
     new_df = pd.DataFrame(data={'text': texts, 'label': label.astype(int)})
-    new_df.to_csv('../datasets/' + str(i)+'.csv', index=False)
+    write_path = os.path.join('..','datasets',str(i)+'.csv')
+    new_df.to_csv(write_path, index=False)
