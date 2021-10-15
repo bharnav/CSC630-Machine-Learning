@@ -7,15 +7,21 @@ import numpy as np
 import math
 
 class Variable():
+    '''
+    creates an identity matrix, for which all values are 0s, except for the index for self.name, which has a value of 1
+    '''
     # equivalent to the grad method
     def grad(self, values):
-        # getting the position of the current variable in our dictionary values
-        sort = sorted(list(values.keys))
-        pos = int(sort.index(self.name))
-
-        # creates the gradient which is an array of 0s, except for at the index of the current variable, at which it is 1
+        #defining an array fill of 0s, for the length of values
         grad = [0]*len(values)
-        grad[pos-1] = 1
+        # getting the position of the current variable in our dictionary values
+        # sorts the keys in the dictionary, values
+        sort = sorted(list(values.keys()))
+        # pos = int(sort.index(self.name))
+        # finds the position of the current variable, in the sorted keys of the dictionary values
+        pos = [x for x, key in enumerate(sort) if key == self.name]
+        # sets the index of the current variable to a value of 1
+        grad[pos[0]] = 1
         return np.array(grad)
         
     def __init__(self, name=None, evaluate=None, gradient=None):
