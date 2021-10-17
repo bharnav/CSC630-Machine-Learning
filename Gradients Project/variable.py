@@ -16,10 +16,11 @@ class Variable():
         grad = [0]*len(values)
         # getting the position of the current variable in our dictionary values
         # sorts the keys in the dictionary, values
-        sort = sorted(list(values.keys()))
-        # pos = int(sort.index(self.name))
+        pos = [i for i, key in enumerate(values.keys()) if key == self.name]
+        # if the key is not in values
+        if len(pos) == 0:
+            raise ValueError('Key not found')  
         # finds the position of the current variable, in the sorted keys of the dictionary values
-        pos = [x for x, key in enumerate(sort) if key == self.name]
         # sets the index of the current variable to a value of 1
         grad[pos[0]] = 1
         return np.array(grad)
@@ -29,25 +30,21 @@ class Variable():
             self.evaluate = lambda values: values[self.name]
         else:
             self.evaluate = evaluate
+            
         if gradient == None:
             self.gradient = lambda values: Variable.grad(self, values)
         else:
             self.gradient = gradient
-        if self.name != None:
+            
+        if name != None:
             self.name = name
-    
-    def name(self, name):
-        self.name = name
-        
-    def evaluate(self, values):
-        return values[self.name]
     
     def __add__(self, other):
         # adds a variable to a scalar
         if isinstance(other, (int, float)):
             return Variable(evaluate = lambda values: self.evaluate(values) + other, gradient = lambda values: self.gradient(values))
         # adds a variable to a variable
-        return Variable(evaluate = lambda values: self.evaluate(values) + self.other(values), gradient = lambda values: self.gradient(values) + other.gradient(values))
+        return Variable(evaluate = lambda values: self.evaluate(values) + other.evaluate(values), gradient = lambda values: self.gradient(values) + other.gradient(values))
     
     def __radd__(self, other):
         return self + other
@@ -80,7 +77,7 @@ class Variable():
     def __rtruediv__(self, other):
         return other * (self ** -1)
     
-     def __sub__(self, other):
+    def __sub__(self, other):
          return self + (other * -1)
     
     def __rsub__(self, other):
@@ -100,5 +97,3 @@ class Variable():
             return Variable(evaluate = math.log(var), gradient = lambda values: np.zeros(len(values)))
         # taking a log of a variable
         return Variable(evaluate = lambda values: math.log(var.evaluate(values)), gradient = lambda values: (var.evaluate(values) ** -1) * var.gradient(values))
-            
-        
