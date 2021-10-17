@@ -10,8 +10,8 @@ class Variable():
     '''
     creates an identity matrix, for which all values are 0s, except for the index for self.name, which has a value of 1
     '''
-    # equivalent to the grad method
-    def grad(self, values):
+
+    def grads(self, values):
         #defining an array fill of 0s, for the length of values
         grad = [0]*len(values)
         # getting the position of the current variable in our dictionary values
@@ -33,13 +33,19 @@ class Variable():
             self.evaluate = evaluate
             
         if gradient == None:
-            self.gradient = lambda values: Variable.grad(self, values)
+            self.gradient = lambda values: Variable.grads(self, values)
             # self.gradient = lambda values: np.array(list(map((lambda x: int(x == self.name)), sorted(list(values.keys())))))
         else:
             self.gradient = gradient
             
         if name != None:
             self.name = name
+    
+    def __call__(self, **kwargs):
+        return self.evaluate(kwargs)
+    
+    def grad(self, **kwargs):
+        return self.gradient(kwargs)
     
     def __add__(self, other):
         # adds a variable to a scalar
@@ -100,3 +106,20 @@ class Variable():
         # taking a log of a variable
         return Variable(evaluate = lambda values: math.log(var.evaluate(values)), gradient = lambda values: (var.evaluate(values) ** -1) * var.gradient(values))
 
+x_1 = Variable(name="x_1")
+x_2 = Variable(name="x_2")
+x_3 = Variable(name="x_3")
+
+z = Variable.exp(x_1 + x_2**2) + 3 * Variable.log(27 - x_1 * x_2 * x_3)
+print(z.grad(x_1 = 3, x_2 = 1, x_3 = 7))
+
+y = x_1**x_2    # equivalent to running y = x_1.__add__(x_2)
+print("should be 4:", y.evaluate({"x_1": 1, "x_2": 3}))
+
+z = y + 2 + x_1 
+
+print("should be 7:", z(x_1 = 2, x_2 = 3))    
+
+c = x_1+x_2**2
+
+print(c.evaluate({"x_1": 1, "x_2": 3}))
