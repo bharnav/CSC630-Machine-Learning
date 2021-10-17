@@ -19,7 +19,7 @@ class Variable():
         pos = [i for i, key in enumerate(values.keys()) if key == self.name]
         # if the key is not in values
         if len(pos) == 0:
-            raise ValueError('Cannot find key {self.name} in the input values')
+            raise ValueError('key {self.name} not found')
             
         # finds the position of the current variable, in the sorted keys of the dictionary values
         # sets the index of the current variable to a value of 1
@@ -41,10 +41,10 @@ class Variable():
         if name != None:
             self.name = name
     
-    def __call__(self, **kwargs):
+    def __call__(self, **kwargs): # makes it such that you don't need to call evaluate, and instead run: z.grad(x_1= 3, x_2= 1, x_3= 7)
         return self.evaluate(kwargs)
     
-    def grad(self, **kwargs):
+    def grad(self, **kwargs): # allows you to run gradients by calling .grad()
         return self.gradient(kwargs)
     
     def __add__(self, other):
