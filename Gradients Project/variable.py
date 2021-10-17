@@ -19,7 +19,7 @@ class Variable():
         pos = [i for i, key in enumerate(values.keys()) if key == self.name]
         # if the key is not in values
         if len(pos) == 0:
-            raise ValueError('Cannot find key {self.name} in the input values')
+            raise ValueError('key {self.name} not found')
             
         # finds the position of the current variable, in the sorted keys of the dictionary values
         # sets the index of the current variable to a value of 1
