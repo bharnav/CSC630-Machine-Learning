@@ -18,7 +18,7 @@ class LogisticRegression():
         return act_func
     
     def loss_function(self, pred, true, dims):
-        neg_avg = ((0 - 1))
+        neg_avg = (0 - 1)
         return neg_avg * sum([true[i] * Variable.log(pred[i]) + (1 - true[i]) * Variable.log(1 - pred[i]) for i in range(dims)])
 
     def fit(self, X, y):
