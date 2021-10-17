@@ -1,9 +1,10 @@
 import numpy as np
 import math
 from variable import Variable
+from sklearn.metrics import accuracy_score
 
 class LogisticRegression():
-    def __init__(self, learning_rate = 0.001, epochs = 50, verbose = False):
+    def __init__(self, learning_rate = 0.001, epochs = 1000, verbose = False):
         self.lr = learning_rate
         self.verbose = verbose
         self.epochs = epochs
@@ -25,11 +26,12 @@ class LogisticRegression():
         n = np.shape(X)[1]
         w = [Variable(name = i) for i in range(n)]
         b = Variable(name = "bias")
-        h = self.sigmoid(w, X, b, m)
+        h = [(1 / (1 + Variable.exp(sum(w * X[i]) + b))) for i in range(m)]
+#         h = self.sigmoid(w, X, b, m)
         cost = self.loss_function(h, y, m)
         self.w_iter = np.zeros(n)
         self.b_iter = 0
-        
+
         self.cost_list = []
         for wq in range(self.epochs):
             all_vars_coeffs = {i : self.w_iter[i] for i in range(n)}
@@ -56,3 +58,13 @@ class LogisticRegression():
             lin_comb = sum(c * x for c, x in zip(self.w_iter, X[i]))
             vals.append((1 / (1 + math.exp((lin_comb) + self.b_iter))))
         return vals
+    
+    @staticmethod
+    def acc_score(reg, test, true):
+        pred = reg.predict(test)
+        for i in range(len(pred)):
+            if pred[i] >= 0.5:
+                pred[i] = 1
+            else:
+                pred[i] = 0
+        return accuracy_score(true, pred)
