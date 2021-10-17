@@ -19,7 +19,8 @@ class Variable():
         pos = [i for i, key in enumerate(values.keys()) if key == self.name]
         # if the key is not in values
         if len(pos) == 0:
-            raise ValueError('Key not found')  
+            raise ValueError('Cannot find key {self.name} in the input values')
+            
         # finds the position of the current variable, in the sorted keys of the dictionary values
         # sets the index of the current variable to a value of 1
         grad[pos[0]] = 1
@@ -33,6 +34,7 @@ class Variable():
             
         if gradient == None:
             self.gradient = lambda values: Variable.grad(self, values)
+            # self.gradient = lambda values: np.array(list(map((lambda x: int(x == self.name)), sorted(list(values.keys())))))
         else:
             self.gradient = gradient
             
@@ -64,7 +66,7 @@ class Variable():
         if isinstance(other, (int, float)):
             return Variable(evaluate = lambda values: self.evaluate(values) ** other, gradient = lambda values: (other) * (self.evaluate(values) ** (other - 1)) * self.gradient(values))
         # raises a variable to the power of another variable
-        return Variable(evaluate = lambda values: self.evaluate(values) ** other.evaluate(values), gradient = other.evaluate(values) * (self.evaluate(values) ** (other.evaluate(values) - 1)) * self.gradient(values) + math.log(self.evaluate(values)) * (self.evaluate(values) ** other.evaluate(values)) * other.gradient(values))
+        return Variable(evaluate = lambda values: self.evaluate(values) ** other.evaluate(values), gradient = lambda values: other.evaluate(values) * (self.evaluate(values) ** (other.evaluate(values) - 1)) * self.gradient(values) + math.log(self.evaluate(values)) * (self.evaluate(values) ** other.evaluate(values)) * other.gradient(values))
 
     def __rpow__(self, other):
         # raises a scalar to the power of a vaiable
@@ -97,3 +99,4 @@ class Variable():
             return Variable(evaluate = math.log(var), gradient = lambda values: np.zeros(len(values)))
         # taking a log of a variable
         return Variable(evaluate = lambda values: math.log(var.evaluate(values)), gradient = lambda values: (var.evaluate(values) ** -1) * var.gradient(values))
+
