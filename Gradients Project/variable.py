@@ -19,7 +19,7 @@ class Variable():
         pos = [i for i, key in enumerate(values.keys()) if key == self.name]
         # if the key is not in values
         if len(pos) == 0:
-            raise ValueError('key {self.name} not found')
+            raise ValueError('Cannot find key {self.name} in the input values')
             
         # finds the position of the current variable, in the sorted keys of the dictionary values
         # sets the index of the current variable to a value of 1
@@ -105,21 +105,3 @@ class Variable():
             return Variable(evaluate = math.log(var), gradient = lambda values: np.zeros(len(values)))
         # taking a log of a variable
         return Variable(evaluate = lambda values: math.log(var.evaluate(values)), gradient = lambda values: (var.evaluate(values) ** -1) * var.gradient(values))
-
-x_1 = Variable(name="x_1")
-x_2 = Variable(name="x_2")
-x_3 = Variable(name="x_3")
-
-z = Variable.exp(x_1 + x_2**2) + 3 * Variable.log(27 - x_1 * x_2 * x_3)
-print(z.grad(x_1 = 3, x_2 = 1, x_3 = 7))
-
-y = x_1**x_2    # equivalent to running y = x_1.__add__(x_2)
-print("should be 4:", y.evaluate({"x_1": 1, "x_2": 3}))
-
-z = y + 2 + x_1 
-
-print("should be 7:", z(x_1 = 2, x_2 = 3))    
-
-c = x_1+x_2**2
-
-print(c.evaluate({"x_1": 1, "x_2": 3}))
