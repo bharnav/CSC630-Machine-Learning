@@ -17,7 +17,7 @@ class LogisticRegression():
         return act_func
     
     def loss_function(self, pred, true, dims):
-        neg_avg = ((0 - 1) / dims)
+        neg_avg = ((0 - 1))
         return neg_avg * sum([true[i] * Variable.log(pred[i]) + (1 - true[i]) * Variable.log(1 - pred[i]) for i in range(dims)])
 
     def fit(self, X, y):
@@ -30,25 +30,25 @@ class LogisticRegression():
         self.w_iter = np.zeros(n)
         self.b_iter = 0
         
-        cost_list = []
+        self.cost_list = []
         for wq in range(self.epochs):
             all_vars_coeffs = {i : self.w_iter[i] for i in range(n)}
             all_vars_coeffs.update({"bias" : self.b_iter})
             self.w_iter = self.w_iter - self.lr * cost.gradient(all_vars_coeffs)[0 : len(cost.gradient(all_vars_coeffs)) - 1]
             self.b_iter = self.b_iter - self.lr * cost.gradient(all_vars_coeffs)[-1]
-            cost_list.append(cost.evaluate(all_vars_coeffs))
+            self.cost_list.append(cost.evaluate(all_vars_coeffs))
             if self.verbose:
                 if wq <= 9:
-                    print(f"[{wq}]     ", "loss:", cost_list[wq])
+                    print(f"[{wq}]     ", "loss:", self.cost_list[wq])
                 elif wq <= 99:
-                    print(f"[{wq}]    ", "loss:", cost_list[wq])
+                    print(f"[{wq}]    ", "loss:", self.cost_list[wq])
                 elif wq <= 999:
-                    print(f"[{wq}]   ", "loss:", cost_list[wq])
+                    print(f"[{wq}]   ", "loss:", self.cost_list[wq])
                 elif wq <= 9999:
-                    print(f"[{wq}]  ", "loss:", cost_list[wq])
+                    print(f"[{wq}]  ", "loss:", self.cost_list[wq])
                 else:
-                    print(f"[{wq}] ", "loss:", cost_list[wq])
-        print(f"LogisticRegressor(loss_score={cost_list[self.epochs-1]},", f"weights={self.w_iter},", f"bias={self.b_iter})")
+                    print(f"[{wq}] ", "loss:", self.cost_list[wq])
+        print(f"LogisticRegressor(loss_score={self.cost_list[self.epochs-1]},", f"weights={self.w_iter},", f"bias={self.b_iter})")
 
     def predict(self, X):
         vals = []
