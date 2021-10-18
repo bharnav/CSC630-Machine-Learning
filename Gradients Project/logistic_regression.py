@@ -26,7 +26,7 @@ class LogisticRegression():
         n = np.shape(X)[1]
         w = [Variable(name = i) for i in range(n)]
         b = Variable(name = "bias")
-        h = [(1 / (1 + Variable.exp(sum(w * X[i]) + b))) for i in range(m)]
+        h = [(1 / (1 + Variable.exp(sum(np.array(w) * X[i]) + b))) for i in range(m)]
 #         h = self.sigmoid(w, X, b, m)
         cost = self.loss_function(h, y, m)
         self.w_iter = np.zeros(n)
