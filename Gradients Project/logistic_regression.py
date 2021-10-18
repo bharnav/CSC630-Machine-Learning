@@ -4,10 +4,12 @@ from variable import Variable
 from sklearn.metrics import accuracy_score
 
 class LogisticRegression():
-    def __init__(self, learning_rate = 0.001, epochs = 1000, verbose = False):
+    def __init__(self, learning_rate = 0.001, epochs = 1000, baseline = 0.01, verbose = False, early_stopping = False):
         self.lr = learning_rate
         self.verbose = verbose
         self.epochs = epochs
+        self.early_stopping = early_stopping
+        self.baseline = baseline
         pass
     
     def sigmoid(self, w, val, b, dims):
@@ -33,6 +35,7 @@ class LogisticRegression():
         self.b_iter = 0
 
         self.cost_list = []
+        iters = 1
         for wq in range(self.epochs):
             all_vars_coeffs = {i : self.w_iter[i] for i in range(n)}
             all_vars_coeffs.update({"bias" : self.b_iter})
@@ -50,7 +53,11 @@ class LogisticRegression():
                     print(f"[{wq}]  ", "loss:", self.cost_list[wq])
                 else:
                     print(f"[{wq}] ", "loss:", self.cost_list[wq])
-        print(f"LogisticRegressor(loss_score={self.cost_list[self.epochs-1]},", f"weights={self.w_iter},", f"bias={self.b_iter})")
+            if self.early_stopping:
+                if self.cost_list[wq] <= self.baseline:
+                    break
+            iters = iters + 1
+        print(f"LogisticRegressor(loss_score={self.cost_list[iters-1]},", f"weights={self.w_iter},", f"bias={self.b_iter})")
 
     def predict(self, X):
         vals = []
