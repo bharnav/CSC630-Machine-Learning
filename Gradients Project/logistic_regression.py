@@ -4,7 +4,7 @@ from variable import Variable
 from sklearn.metrics import accuracy_score
 
 class LogisticRegression():
-    def __init__(self, learning_rate = 0.001, epochs = 1000, baseline = 0.01, verbose = False, early_stopping = False):
+    def __init__(self, learning_rate = 0.001, epochs = 10000, baseline = 0.01, verbose = False, early_stopping = False):
         self.lr = learning_rate
         self.verbose = verbose
         self.epochs = epochs
