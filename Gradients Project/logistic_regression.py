@@ -30,12 +30,13 @@ class LogisticRegression():
         b = Variable(name = "bias")
         h = [(1 / (1 + Variable.exp(sum(np.array(w) * X[i]) + b))) for i in range(m)]
 #         h = self.sigmoid(w, X, b, m)
-        cost = self.loss_function(h, y, m)
+        cost = (0 - 1) * sum([y[i] * Variable.log(h[i]) + (1 - y[i]) * Variable.log(1 - h[i]) for i in range(m)])
+        # cost = self.loss_function(h, y, m)
         self.w_iter = np.zeros(n)
         self.b_iter = 0
 
         self.cost_list = []
-        iters = 1
+        iters = 0
         for wq in range(self.epochs):
             all_vars_coeffs = {i : self.w_iter[i] for i in range(n)}
             all_vars_coeffs.update({"bias" : self.b_iter})
@@ -43,15 +44,15 @@ class LogisticRegression():
             self.b_iter = self.b_iter - self.lr * cost.gradient(all_vars_coeffs)[-1]
             self.cost_list.append(cost.evaluate(all_vars_coeffs))
             if self.verbose:
-                if wq <= 9:
+                if wq <= 9 and wq%5 == 0:
                     print(f"[{wq}]     ", "loss:", self.cost_list[wq])
-                elif wq <= 99:
+                elif wq <= 99 and wq%5 == 0:
                     print(f"[{wq}]    ", "loss:", self.cost_list[wq])
-                elif wq <= 999:
+                elif wq <= 999 and wq%5 == 0:
                     print(f"[{wq}]   ", "loss:", self.cost_list[wq])
-                elif wq <= 9999:
+                elif wq <= 9999 and wq%5 == 0:
                     print(f"[{wq}]  ", "loss:", self.cost_list[wq])
-                else:
+                elif wq%5 == 0:
                     print(f"[{wq}] ", "loss:", self.cost_list[wq])
             if self.early_stopping:
                 if self.cost_list[wq] <= self.baseline:
