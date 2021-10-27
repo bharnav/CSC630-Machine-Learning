@@ -75,7 +75,7 @@ docs/_build/
 target/
 
 .DS_STORE
-Myers Briggs Types/models/myers-briggs-Machine-Learning.git'data_0-lstm.ipynb
+Predicting Myers Briggs Types/models/myers-briggs-data_0-lstm.ipynb
 
 # Jupyter Notebook
 .ipynb_checkpoints
