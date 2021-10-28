@@ -1,0 +1,6 @@
+
+
+Would you like to come in now?
+Would you like to come inside?
+(repeated 10 *)
+
