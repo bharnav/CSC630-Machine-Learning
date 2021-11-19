@@ -4,7 +4,8 @@ from variable import Variable
 from sklearn.metrics import accuracy_score
 
 class LogisticRegression():
-    def __init__(self, learning_rate = 0.001, epochs = 10000, baseline = 0.01, verbose = False, early_stopping = False):
+    def __init__(self, learning_rate = 0.001, epochs = 1000, baseline = 0.01, verbose = False, early_stopping = False):
+        # defining our global variables
         self.lr = learning_rate
         self.verbose = verbose
         self.epochs = epochs
@@ -12,6 +13,7 @@ class LogisticRegression():
         self.baseline = baseline
         pass
     
+    # defining our sigmoid function so that we can make predictions
     def sigmoid(self, w, val, b, dims):
         act_func = []
         for i in range(dims):
@@ -19,6 +21,7 @@ class LogisticRegression():
             act_func.append((1 / (1 + Variable.exp((lin_comb) + b))))
         return act_func
     
+    # defining our loss function
     def loss_function(self, pred, true, dims):
         neg_avg = (0 - 1)
         return neg_avg * sum([true[i] * Variable.log(pred[i]) + (1 - true[i]) * Variable.log(1 - pred[i]) for i in range(dims)])
@@ -26,10 +29,13 @@ class LogisticRegression():
     def fit(self, X, y):
         m = np.shape(X)[0]
         n = np.shape(X)[1]
+        # defining our weights
         w = [Variable(name = i) for i in range(n)]
+        # defining our bias
         b = Variable(name = "bias")
         h = [(1 / (1 + Variable.exp(sum(np.array(w) * X[i]) + b))) for i in range(m)]
-#         h = self.sigmoid(w, X, b, m)
+        # h = self.sigmoid(w, X, b, m)
+        # defining the cost
         cost = (0 - 1) * sum([y[i] * Variable.log(h[i]) + (1 - y[i]) * Variable.log(1 - h[i]) for i in range(m)])
         # cost = self.loss_function(h, y, m)
         self.w_iter = np.zeros(n)
@@ -37,12 +43,16 @@ class LogisticRegression():
 
         self.cost_list = []
         iters = 0
+        
+        # below we create a loop to update the loss, bias, and coefficient weights every epoch
         for wq in range(self.epochs):
             all_vars_coeffs = {i : self.w_iter[i] for i in range(n)}
             all_vars_coeffs.update({"bias" : self.b_iter})
             self.w_iter = self.w_iter - self.lr * cost.gradient(all_vars_coeffs)[0 : len(cost.gradient(all_vars_coeffs)) - 1]
             self.b_iter = self.b_iter - self.lr * cost.gradient(all_vars_coeffs)[-1]
             self.cost_list.append(cost.evaluate(all_vars_coeffs))
+            
+            # printing out the training metrics every 5 epochs if verbose == True
             if self.verbose:
                 if wq <= 9 and wq%5 == 0:
                     print(f"[{wq}]     ", "loss:", self.cost_list[wq])
